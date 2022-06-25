@@ -21,3 +21,9 @@ class human(Player.Player):
     def betPrompt(self):
         print("Current cash:"+str(self.cash))
         return int(input("How much would you like to wager?:"))
+
+    def insurancePrompt(self):
+        mv = input("Insurance? Y/N:")
+        if (mv.upper() == "Y"):
+            return True
+        return False

@@ -16,7 +16,7 @@ class debugTable(object):
         self.onTCash = [] #On table cash
         self.onICash = [] #This is the insurance check
         self.onTCards = [] #Cards that are currently on the table
-        self.playerlen = 0 #Length of the players
+
         self.deck = cardsUtil.cards()
         self.minMax = [min,max]
         self.addPlayer(players.dealer.Dealer())
@@ -25,9 +25,11 @@ class debugTable(object):
 
     def addPlayer(self,p):
         print("<DEBUG> Added "+p.name)
-        self.playerlen += 1
+
         print("Starting cash: "+str(p.cash))
         self.players.append(p)
+        self.onICash.append(0)
+        self.onTCash.append(0)
 
     def round(self):
         print("Starting a new round!\n")
@@ -36,7 +38,7 @@ class debugTable(object):
         self.betPrompt()
 
         print("Initiate card feedings:")
-        for j in range(0,self.playerlen):
+        for j in range(0,len(self.players)):
             #This variable is unnecassary in non-debug 
             for k in range(0,2):
                 c = self.deck.give()
@@ -49,12 +51,15 @@ class debugTable(object):
         #insurance prompt
         if (self.players[0].hand[0][0] == 'A'):
             print("Insurance!\n")
-            for i in range(1,self.playerlen):
-                self.players[i].insurancePrompt()
+            for i in range(1,len(self.players)):
+                if (self.players[i].insurancePrompt()):
+                    self.onICash[i] += self.onTCash * .5
+                else:
+                    self.onICash[i] = 0
 
             if (self.players[0].hand[0][1] == 10):
                 print("Black jack!")
-                for j in range(1,self.playerlen):
+                for j in range(1,len(self.players)):
                     self.players[j].calcHand()
                     if (self.players[j].scores[0] == 21):
                         #If the player has the card and has the 
@@ -131,7 +136,7 @@ class debugTable(object):
     def betPrompt(self):
         self.onTCash = [0] #This is the initalization
 
-        for i in range(1,self.playerlen):
+        for i in range(1,len(self.players)):
             pr = self.players[i].betPrompt()
             self.players[i].cash -= pr
             print(self.players[i].name+" has bet "+str(pr))
@@ -144,7 +149,7 @@ class debugTable(object):
         dealerscore = self.players[0].scoresHand(True)[0]
         print("Dealer has a "+str(dealerscore))
         print(self.players[0].hand)
-        for i in range(self.playerlen-1,0,-1):
+        for i in range(len(self.players)-1,0,-1):
             print("\n"+self.players[i].name+":\n")
             self.players[i].calcHand()
             print(self.players[i].hand)
@@ -208,7 +213,7 @@ class debugTable(object):
                     if they have identical cards
                         split their cards and add a new array ['3']['3']
                     else
-                        reprompt
+                        reprompt *Not necessary I don't think
                 elif the player doubles down
                     if they have the cash to double down and they have not already hit on that hand (len of 2 cards)
                         double player's bet, subtract bet, then hit the player with the card

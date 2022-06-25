@@ -30,10 +30,10 @@ class Player(object):
         """
         INSURANCE
         (Insurance is only used when the player is given an ace on the dealer)
-        I: INSURANCE
-        N: NO INSURANCE
+        True: INSURANCE
+        False: NO INSURANCE
         """
-        self.inMove = "N" #Insurance is a scam ;)
+        self.inMove = False #Insurance is a scam ;)
 
         """
         STATUS

@@ -17,7 +17,7 @@ class Dealer(Player.Player):
     def movePrompt(self):
         self.calcHand()
         #I decided to not have the dealer hit a soft 17
-        if (self.scores[0] <= 17):
+        if (self.scores[0] < 17):
             self.currMove = "H"
         else:
             self.currMove = "S"
